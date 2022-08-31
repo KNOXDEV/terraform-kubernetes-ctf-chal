@@ -32,7 +32,7 @@ Here's a minimal configuration.
 ```terraform
 module "challenge" {
    source = "KNOXDEV/ctf-chal"
-   version = "1.0.0"
+   version = "1.0.1"
    name = "kleptomanic"
    challenge_path = "./path/to/challenge/source/code"
 }
@@ -40,7 +40,7 @@ module "challenge" {
 
 ### challenge repo requirements
 
-In order to be a valid target for the `challenge_repo` input variable, a
+In order to be a valid target for the `challenge_path` input variable, a
 git repository must meet the following requirements:
 
 1. Contain a `Dockerfile` that builds your challenge in the root directory.
@@ -50,5 +50,5 @@ git repository must meet the following requirements:
 4. Contain an `/home/user/entrypoint.sh` that launches your service. 
    Your `Dockerfile` does not necessarily need to call this, 
    but the `Dockerfile` that this module generates **will**.
-5. TODO: Contain a `/home/user/healthcheck.sh` that returns true if the challenge is healthy,
+5. **TODO**: Contain a `/home/user/healthcheck.sh` that returns true if the challenge is healthy,
    false otherwise.
