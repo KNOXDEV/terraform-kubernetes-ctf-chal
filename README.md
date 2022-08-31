@@ -31,9 +31,9 @@ Here's a minimal configuration.
 
 ```terraform
 module "challenge" {
-   source = "KNOXDEV/ctf-chal"
+   source = "KNOXDEV/ctf-chal/kubernetes"
    version = "1.0.1"
-   name = "kleptomanic"
+   name = "unique-challenge-name"
    challenge_path = "./path/to/challenge/source/code"
 }
 ```
