@@ -119,3 +119,12 @@ The `tunnelling` jail type has the following **additional requirements**:
 These requirements are due to the fact that the tunnelling jail
 needs to install additional runtime dependencies, mainly `socat` and `sshd`,
 in order to provide port forwarding.
+
+
+## acknowledgements
+
+The work this module does would be impossible without building on the backs of these
+incredible projects:
+
+1. [Google's kCTF](https://github.com/google/kctf)
+2. [redpwn's jail](https://github.com/redpwn/jail)

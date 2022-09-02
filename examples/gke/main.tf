@@ -1,16 +1,6 @@
-// configuring kubernetes to use the Docker Desktop version
-provider "kubernetes" {
-  config_path = "~/.kube/config"
-  config_context = "docker-desktop"
-}
-
-provider "docker" {
-  host = "tcp://localhost:2375"
-}
-
-module "ctf-chal-taap" {
-  source = "../../"
-  challenge_path = "./challenge"
-  name = "kleptomanic"
-  jail_type = "forking"
+# should pull specific auth from local gcloud cli
+provider "google" {
+  project = var.project_id
+  region = var.region
+  zone = var.zone
 }

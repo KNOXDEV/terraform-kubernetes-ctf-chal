@@ -28,6 +28,8 @@ terraform init
 terraform apply
 ```
 
+When running the above, you will be prompted for some information, such as your GCP project ID.
+
 **With permission**, I've borrowed a challenge from
 [San Diego CTF 2022](https://github.com/acmucsd/sdctf-2022) and deployed it via
 the `forking` jail type.
