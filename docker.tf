@@ -24,11 +24,15 @@ resource "docker_image" "chal" {
   depends_on = [docker_image.nsjail, docker_image.challenge_base]
   name       = "challenge-jailed-image"
   build {
-    path      = "${path.module}/docker-images/forking"
+    path      = local.jail_image_path
     build_arg = {
       CHALLENGE_IMAGE = local.base_image_name
     }
     tag = ["${var.name}:latest", local.published_image_name]
+  }
+  # mainly for development of the module, if the jail sourcecode changes, rebuild
+  triggers = {
+    sha1 = sha1(join("", [for f in fileset(local.jail_image_path, "**") : filesha1("${local.jail_image_path}/${f}")]))
   }
 }
 

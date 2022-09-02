@@ -1,0 +1,26 @@
+
+# use a non-privileged port
+Port 2022
+
+# set the banner
+Banner /opt/ssh/sshd_banner
+PidFile /opt/ssh/sshd.pid
+
+## provide the new path containing these host keys
+HostKey /opt/ssh/ssh_host_rsa_key
+HostKey /opt/ssh/ssh_host_ecdsa_key
+HostKey /opt/ssh/ssh_host_ed25519_key
+
+AllowTcpForwarding yes
+PermitOpen 127.0.0.1:1337
+StrictModes yes
+PermitEmptyPasswords yes
+PermitRootLogin no
+
+# deprecated option, but in our case it prevents sshd from trying to setuid and stuff
+UsePrivilegeSeparation no
+UsePam no
+
+# only allow the user account to connect
+AllowUsers user
+AllowGroups user

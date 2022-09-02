@@ -1,0 +1,6 @@
+You are successfully connected to the challenge.
+An isolated service has been forwarded to the localhost port you specified.
+
+You should leave this terminal open while interacting with the service.
+When this session is closed (by pressing Ctrl+C), you will be disconnected,
+and any writes to the underlying filesystem of the service will be discarded.

@@ -13,3 +13,9 @@ variable "docker_registry" {
   description = "the docker registry to push images to (kubernetes must also have access to this)"
   default = ""
 }
+
+variable "jail_type" {
+  type = string
+  description = "the type of jail that will be used for this challenge (see README)"
+  default = "forking"
+}

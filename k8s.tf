@@ -6,7 +6,7 @@ resource "kubernetes_namespace" "challenge_ns" {
 }
 
 resource "kubernetes_deployment" "challenge_deployment" {
-  depends_on = [docker_registry_image.challenge_published]
+  depends_on = [docker_registry_image.challenge_published, docker_image.chal]
   metadata {
     name      = "${var.name}-deploy"
     namespace = kubernetes_namespace.challenge_ns.metadata[0].name
@@ -36,14 +36,14 @@ resource "kubernetes_deployment" "challenge_deployment" {
           name  = "challenge"
           image = local.published_image_name
           port {
-            container_port = 1337
+            container_port = 22
           }
           # this is the most restrictive context that still allows nsjail to run
           security_context {
             read_only_root_filesystem = true
             capabilities {
               drop = ["ALL"]
-              add  = ["CHOWN", "MKNOD", "SETUID", "SETGID", "SYS_ADMIN", "SETFCAP"]
+              add  = local.k8s_capabilities
             }
           }
         }
@@ -64,9 +64,9 @@ resource "kubernetes_service" "challenge_service" {
   spec {
     type = "LoadBalancer"
     port {
-      port        = 1337
+      port        = local.k8s_port
       protocol    = "TCP"
-      target_port = 1337
+      target_port = local.k8s_port
     }
     selector = {
       app = var.name
