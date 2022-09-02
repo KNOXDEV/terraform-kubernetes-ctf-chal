@@ -1,4 +1,4 @@
-# terraform-kubernetes-ctf-chal
+# ctf-chal/kubernetes
 
 A [Terraform](https://registry.terraform.io/) module that allows
 for a cloud-agnostic deployment of a dockerized CTF challenge
