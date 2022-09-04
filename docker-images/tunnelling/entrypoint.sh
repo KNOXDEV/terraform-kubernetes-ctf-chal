@@ -13,4 +13,4 @@ mount -t proc none /.jailproc/proc
 mount -t tmpfs jailtmp /jail/tmp
 
 # use socat to spin up a new, isolated nsjail for each incoming TCP connection
-socat TCP-LISTEN:22,reuseaddr,fork EXEC:"/bin/bash /home/user/socat_entrypoint.sh"
+socat TCP-LISTEN:1337,reuseaddr,fork EXEC:"/bin/bash /home/user/socat_entrypoint.sh"

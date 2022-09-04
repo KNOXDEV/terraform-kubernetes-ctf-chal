@@ -36,8 +36,9 @@ resource "kubernetes_deployment" "challenge_deployment" {
           name  = "challenge"
           image = local.published_image_name
           port {
-            container_port = 22
+            container_port = 1337
           }
+          image_pull_policy = "Always"
           # this is the most restrictive context that still allows nsjail to run
           security_context {
             read_only_root_filesystem = true
@@ -66,7 +67,7 @@ resource "kubernetes_service" "challenge_service" {
     port {
       port        = local.k8s_port
       protocol    = "TCP"
-      target_port = local.k8s_port
+      target_port = 1337
     }
     selector = {
       app = var.name

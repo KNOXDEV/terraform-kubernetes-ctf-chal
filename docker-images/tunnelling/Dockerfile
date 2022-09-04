@@ -53,5 +53,5 @@ COPY --from=chal / /chroot
 # copy over the config and entrypoint
 COPY nsjail.cfg entrypoint.sh socat_entrypoint.sh /home/user/
 
-EXPOSE 22
+EXPOSE 1337
 ENTRYPOINT ["/home/user/entrypoint.sh"]
