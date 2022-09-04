@@ -1,3 +1,10 @@
+# should pull specific auth from local gcloud cli
+provider "google" {
+  project = var.project_id
+  region = var.region
+  zone = var.zone
+}
+
 # Configure kubernetes provider with Oauth2 access token.
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/client_config
 # This fetches a new token, which will expire in 1 hour.
@@ -5,7 +12,6 @@ data "google_client_config" "default" {}
 
 # read the cluster data
 data "google_container_cluster" "default" {
-  depends_on = [google_container_node_pool.primary_nodes]
   name = var.cluster_name
 }
 
@@ -31,8 +37,8 @@ provider "docker" {
 
 module "challenge" {
   # this keeps us from deploying challenges before the GCP stuff is initialized
-  depends_on = [google_artifact_registry_repository.repository, google_container_cluster.primary]
-  source = "../../"
+  depends_on = [data.google_container_cluster.default]
+  source = "../../../"
   challenge_path = "./challenge"
   name = "kleptomanic"
   docker_registry = "${var.region}-docker.pkg.dev/${var.project_id}/${var.artifact_repository_id}"
