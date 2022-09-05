@@ -53,3 +53,21 @@ variable "pid_limit" {
   description = "number of processes the connection may open (default: 5)"
   default     = 5
 }
+
+variable "min_replicas" {
+  type = number
+  description = "the minimum number of pod replicas to spin up for this challenge"
+  default = 1
+}
+
+variable "max_replicas" {
+  type = number
+  description = "the maximum number of pod replicas to spin up for this challenge"
+  default = 1
+}
+
+variable "target_utilization" {
+  type = number
+  description = "cpu utilization percentage to target for horizontal pod autoscaling"
+  default = 60
+}

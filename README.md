@@ -26,7 +26,7 @@ Please hold.
 - [x] process and player isolation (via [nsjail](https://github.com/google/nsjail))
 - [x] sandbox filesystems (via ssh tunnelling)
 - [x] hardware resource restrictions
-- [ ] autoscaling to meet fluctuating demand
+- [x] autoscaling to meet fluctuating demand
 - [ ] efficient (shared) ingress management
 - [ ] proof-of-work (prevent DoS)
 - [ ] healthchecks (catch pod degradation)

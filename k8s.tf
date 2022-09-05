@@ -53,6 +53,25 @@ resource "kubernetes_deployment" "challenge_deployment" {
   }
 }
 
+resource "kubernetes_horizontal_pod_autoscaler" "challenge_autoscaler" {
+  # only create the autoscaler if necessary
+  count = var.max_replicas > var.min_replicas ? 1 : 0
+  depends_on = [kubernetes_deployment.challenge_deployment]
+  metadata {
+    name = "${var.name}-autoscaler"
+    namespace = kubernetes_namespace.challenge_ns.metadata[0].name
+  }
+  spec {
+    target_cpu_utilization_percentage = var.target_utilization
+    min_replicas = var.min_replicas
+    max_replicas = var.max_replicas
+    scale_target_ref {
+      kind = "Deployment"
+      name = "${var.name}-deploy"
+    }
+  }
+}
+
 resource "kubernetes_service" "challenge_service" {
   depends_on = [kubernetes_deployment.challenge_deployment, docker_image.chal]
   metadata {
