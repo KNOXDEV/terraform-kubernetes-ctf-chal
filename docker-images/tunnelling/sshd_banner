@@ -4,3 +4,6 @@ An isolated service has been forwarded to the localhost port you specified.
 You should leave this terminal open while interacting with the service.
 When this session is closed (by pressing Ctrl+C), you will be disconnected,
 and any writes to the underlying filesystem of the service will be discarded.
+
+Note: This session will automatically close after two hours, at which point you
+will be required to reconnect.
