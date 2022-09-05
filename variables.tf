@@ -23,23 +23,13 @@ variable "jail_type" {
 variable "port" {
   type        = string
   description = "external k8s port to expose for the service (default: 22 for tunnelling, 1337 otherwise)"
-  default     = tomap({
-    forking    = 1337
-    tunnelling = 22
-  })[
-  var.jail_type
-  ]
+  default     = null
 }
 
 variable "time_limit" {
   type        = number
   description = "number of wall seconds the connection may stay open (default: 2 hours for tunnelling, 10 minutes otherwise)"
-  default     = tomap({
-    forking    = 600
-    tunnelling = 7200
-  })[
-  var.jail_type
-  ]
+  default     = null
 }
 
 variable "memory_limit" {

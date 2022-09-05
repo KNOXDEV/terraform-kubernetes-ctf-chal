@@ -28,7 +28,7 @@ resource "docker_image" "chal" {
     build_arg = {
       CHALLENGE_IMAGE = local.base_image_name
       MEM_LIMIT = var.memory_limit * 1024 * 1024 // config is in MB, cgroups expects bytes...
-      CPU_LIMIT = var.time_limit
+      CPU_LIMIT = local.time_limit
       PID_LIMIT = var.pid_limit
     }
     tag = ["${var.name}:latest", local.published_image_name]

@@ -13,11 +13,18 @@ locals {
   })[
   var.jail_type
   ]
-  # forking uses port 1337, tunnelling exposes ssh for prolonged sessions
-  k8s_port = tomap({
+  # if port isn't set explicitly, forking uses port 1337, tunnelling exposes ssh for prolonged sessions
+  k8s_port = coalesce(var.port, tomap({
     forking    = 1337
     tunnelling = 22
   })[
   var.jail_type
-  ]
+  ])
+  # time limit default is 2 hours if tunnelling, otherwise it gets annoying
+  time_limit = coalesce(var.time_limit, tomap({
+    forking    = 600
+    tunnelling = 7200
+  })[
+  var.jail_type
+  ])
 }
