@@ -31,6 +31,9 @@ RUN mv /home/user/entrypoint.sh /home/user/orig_entrypoint.sh
 COPY jail_entrypoint.sh /home/user/entrypoint.sh
 
 FROM ubuntu:22.10
+ARG CPU_LIMIT
+ARG MEM_LIMIT
+ARG PID_LIMIT
 RUN apt update && apt install -y --no-install-recommends socat uidmap && rm -rf /var/lib/apt/lists/*
 RUN /usr/sbin/useradd --no-create-home -u 1337 user
 
@@ -52,6 +55,12 @@ COPY --from=chal / /chroot
 
 # copy over the config and entrypoint
 COPY nsjail.cfg entrypoint.sh socat_entrypoint.sh /home/user/
+# set nsjail limits according to build args
+RUN printf '\n%s' \
+    "cgroup_mem_max: $MEM_LIMIT" \
+    "cgroup_pids_max: $PID_LIMIT" \
+    "time_limit: $CPU_LIMIT" \
+    >> nsjail.cfg
 
 EXPOSE 1337
 ENTRYPOINT ["/home/user/entrypoint.sh"]

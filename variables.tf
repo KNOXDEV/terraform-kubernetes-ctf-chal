@@ -1,21 +1,55 @@
 variable "name" {
-  type = string
+  type        = string
   description = "name of the k8s deployment for this challenge"
 }
 
 variable "challenge_path" {
-  type = string
+  type        = string
   description = "path to the challenge source code, which must contain a Dockerfile"
 }
 
 variable "docker_registry" {
-  type = string
+  type        = string
   description = "the docker registry to push images to (kubernetes must also have access to this)"
-  default = ""
+  default     = ""
 }
 
 variable "jail_type" {
-  type = string
+  type        = string
   description = "the type of jail that will be used for this challenge (see README)"
-  default = "forking"
+  default     = "forking"
+}
+
+variable "port" {
+  type        = string
+  description = "external k8s port to expose for the service (default: 22 for tunnelling, 1337 otherwise)"
+  default     = tomap({
+    forking    = 1337
+    tunnelling = 22
+  })[
+  var.jail_type
+  ]
+}
+
+variable "time_limit" {
+  type        = number
+  description = "number of wall seconds the connection may stay open (default: 2 hours for tunnelling, 10 minutes otherwise)"
+  default     = tomap({
+    forking    = 600
+    tunnelling = 7200
+  })[
+  var.jail_type
+  ]
+}
+
+variable "memory_limit" {
+  type        = number
+  description = "number of MB of memory the connection may consume (default: 1024)"
+  default = 1024
+}
+
+variable "pid_limit" {
+  type        = number
+  description = "number of processes the connection may open (default: 5)"
+  default     = 5
 }
