@@ -6,22 +6,25 @@ to a Kubernetes cluster.
 
 ### usage
 
-Here's a minimal configuration.
+1. Write a CTF challenge as a Dockerized application exposing the service on port 1337.
+2. Create a Terraform repo that connects to a Kubernetes cluster you want to deploy to.
+3. Use the below minimal configuration to deploy your challenge.
 
 ```terraform
 module "challenge" {
    source = "KNOXDEV/ctf-chal/kubernetes"
-   version = "1.0.1"
+   version = "1.2.0"
    name = "unique-challenge-name"
    challenge_path = "./path/to/challenge/source/code"
    jail_type = "forking"
 }
 ```
 
+For free, you'll get all the features described in the next section.
+
 ### features
 
-As you can see, most of the features haven't been added yet.
-Please hold.
+Most of the features of a complete production-quality jail have been implemented.
 
 - [x] process and player isolation (via [nsjail](https://github.com/google/nsjail))
 - [x] sandbox filesystems (via ssh tunnelling)
