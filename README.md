@@ -134,7 +134,7 @@ If this script returns a non-zero exit code,
 the challenge container will be restarted. 
 Ideally, this script should solve your challenge and make
 sure the flag is still obtainable via the intended method.
-If at any point, the challenge degrades and is no longer solvable,
+If at any point the challenge degrades and is no longer solvable,
 k8s will catch this and restart your container.
 
 Your healthcheck script can access the service on `localhost:1337`,
