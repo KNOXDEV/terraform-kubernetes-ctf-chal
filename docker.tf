@@ -11,7 +11,7 @@ resource "docker_image" "challenge_base" {
 resource "docker_image" "nsjail" {
   name = "nsjail-image"
   build {
-    path      = "${path.module}/docker-images/nsjail"
+    path      = local.nsjail_image_path
     build_arg = {
       NSJAIL_RELEASE = "3.1"
     }
@@ -27,15 +27,25 @@ resource "docker_image" "chal" {
     path      = local.jail_image_path
     build_arg = {
       CHALLENGE_IMAGE = local.base_image_name
-      MEM_LIMIT = var.memory_limit * 1024 * 1024 // config is in MB, cgroups expects bytes...
-      CPU_LIMIT = local.time_limit
-      PID_LIMIT = var.pid_limit
+      MEM_LIMIT       = var.memory_limit * 1024 * 1024 // config is in MB, cgroups expects bytes...
+      CPU_LIMIT       = local.time_limit
+      PID_LIMIT       = var.pid_limit
     }
     tag = ["${var.name}:latest", local.published_image_name]
   }
-  # mainly for development of the module, if the jail sourcecode changes, rebuild
-  triggers = {
-    sha1 = sha1(join("", [for f in fileset(local.jail_image_path, "**") : filesha1("${local.jail_image_path}/${f}")]))
+}
+
+# generate the healthcheck, if provided
+resource "docker_image" "healthcheck" {
+  count = var.healthcheck_path != null ? 1 : 0
+  name = "healthcheck-image"
+  build {
+    path      = local.healthcheck_image_path
+    build_arg = {
+      HEALTHCHECK_SCRIPT      = var.healthcheck_path
+      ADDITIONAL_REQUIREMENTS = var.healthcheck_additional_requirements
+    }
+    tag = ["${var.name}_healthcheck:latest", local.healthcheck_image_name]
   }
 }
 
@@ -43,5 +53,12 @@ resource "docker_image" "chal" {
 resource "docker_registry_image" "challenge_published" {
   count      = local.should_publish ? 1 : 0
   depends_on = [docker_image.chal]
+  name       = local.published_image_name
+}
+
+# publish the docker image to the provided registry ONLY IF one was given
+resource "docker_registry_image" "healthcheck_published" {
+  count      = local.should_publish && var.healthcheck_path != null ? 1 : 0
+  depends_on = [docker_image.healthcheck]
   name       = local.published_image_name
 }

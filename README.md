@@ -30,9 +30,9 @@ Most of the features of a complete production-quality jail have been implemented
 - [x] sandbox filesystems (via ssh tunnelling)
 - [x] hardware resource restrictions
 - [x] autoscaling to meet fluctuating demand
+- [x] healthchecks (catch pod degradation)
 - [ ] efficient (shared) ingress management
 - [ ] proof-of-work (prevent DoS)
-- [ ] healthchecks (catch pod degradation)
 
 ### jail types
 
@@ -122,6 +122,28 @@ The `tunnelling` jail type has the following **additional requirements**:
 These requirements are due to the fact that the tunnelling jail
 needs to install additional runtime dependencies, mainly `socat` and `sshd`,
 in order to provide port forwarding.
+
+### healthcheck assumptions
+
+In order to take advantage of the healthcheck functionalities,
+you need to feed the module a python script via the
+input variable `healthcheck_path`.
+
+This script will be called every 30 seconds or so.
+If this script returns a non-zero exit code,
+the challenge container will be restarted. 
+Ideally, this script should solve your challenge and make
+sure the flag is still obtainable via the intended method.
+If at any point, the challenge degrades and is no longer solvable,
+k8s will catch this and restart your container.
+
+Your healthcheck script can access the service on `localhost:1337`,
+and by default, you will have access to `pwntools`.
+You can install any additional healthcheck dependencies with the
+`healthcheck_additional_requirements` input variable.
+
+Writing a healthcheck for every challenge is not always feasible,
+but is generally recommended.
 
 
 ## acknowledgements

@@ -1,13 +1,22 @@
 locals {
-  should_publish       = var.docker_registry != ""
-  # by tagging with the challenge sha1 hash, when a change is detected in the original challenge, it will force a redeployment
-  chal_sha1            = sha1(join("", [for f in fileset(var.challenge_path, "**") : filesha1("${var.challenge_path}/${f}")]))
-  base_image_name      = "${var.name}_base:${local.chal_sha1}"
-  published_image_name = local.should_publish ? "${var.docker_registry}/${var.name}:${local.chal_sha1}" : "${var.name}:${local.chal_sha1}"
+  should_publish         = var.docker_registry != ""
   # the type of jail selected will change the image built around the challenge
-  jail_image_path      = "${path.module}/docker-images/${var.jail_type}"
+  jail_image_path        = "${path.module}/docker-images/${var.jail_type}"
+  nsjail_image_path      = "${path.module}/docker-images/nsjail"
+  healthcheck_image_path = "${path.module}/docker-images/healthcheck"
+
+  # by tagging with the challenge sha1 hash, when a change is detected in the original challenge, it will force a redeployment
+  chal_sha1        = sha1(join("", [for f in fileset(var.challenge_path, "**") : filesha1("${var.challenge_path}/${f}")]))
+  healthcheck_sha1 = sha1(join("", concat([for f in fileset(local.healthcheck_image_path, "**") : filesha1("${local.healthcheck_image_path}/${f}")], [
+    var.healthcheck_path == null ? "" : filesha1(var.healthcheck_path), sha1(var.healthcheck_additional_requirements)
+  ])))
+
+  healthcheck_image_name = "${var.name}_healthcheck:${local.healthcheck_sha1}"
+  base_image_name        = "${var.name}_base:${local.chal_sha1}"
+  published_image_name   = local.should_publish ? "${var.docker_registry}/${var.name}:${local.chal_sha1}" : "${var.name}:${local.chal_sha1}"
+
   # tunnelling requires more capabilities to work properly
-  k8s_capabilities     = tomap({
+  k8s_capabilities = tomap({
     forking    = ["CHOWN", "MKNOD", "SETUID", "SETGID", "SYS_ADMIN", "SETFCAP"]
     tunnelling = ["CHOWN", "MKNOD", "SETUID", "SETGID", "DAC_OVERRIDE", "SYS_CHROOT", "FOWNER", "SYS_ADMIN", "SETFCAP"]
   })[

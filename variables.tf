@@ -61,3 +61,15 @@ variable "target_utilization" {
   description = "cpu utilization percentage to target for horizontal pod autoscaling"
   default = 60
 }
+
+variable "healthcheck_path" {
+  type = string
+  description = "path to healthcheck.py to use as a liveliness probe"
+  default = null
+}
+
+variable "healthcheck_additional_requirements" {
+  type = string
+  description = "additional python requirements to install in the healthcheck image"
+  default = ""
+}

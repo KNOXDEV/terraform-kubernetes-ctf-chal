@@ -47,7 +47,39 @@ resource "kubernetes_deployment" "challenge_deployment" {
               add  = local.k8s_capabilities
             }
           }
+#          // both the liveness probe and the readiness probe are part of the healthcheck
+#          liveness_probe {
+#            http_get {
+#              path = "/"
+#              port = 21337
+#            }
+#            failure_threshold     = 2
+#            initial_delay_seconds = 45
+#            timeout_seconds       = 3
+#            period_seconds        = 30
+#          }
+#          readiness_probe {
+#            http_get {
+#              path = "/"
+#              port = 21337
+#            }
+#            initial_delay_seconds = 5
+#            timeout_seconds       = 3
+#            period_seconds        = 5
+#          }
         }
+#        container {
+#          name = "healthcheck"
+#          image = "healthcheck"
+#          resources {
+#            limits = {
+#              cpu = 1000
+#            }
+#            requests = {
+#              cpu = 50
+#            }
+#          }
+#        }
       }
     }
   }
@@ -55,16 +87,16 @@ resource "kubernetes_deployment" "challenge_deployment" {
 
 resource "kubernetes_horizontal_pod_autoscaler" "challenge_autoscaler" {
   # only create the autoscaler if necessary
-  count = var.max_replicas > var.min_replicas ? 1 : 0
+  count      = var.max_replicas > var.min_replicas ? 1 : 0
   depends_on = [kubernetes_deployment.challenge_deployment]
   metadata {
-    name = "${var.name}-autoscaler"
+    name      = "${var.name}-autoscaler"
     namespace = kubernetes_namespace.challenge_ns.metadata[0].name
   }
   spec {
     target_cpu_utilization_percentage = var.target_utilization
-    min_replicas = var.min_replicas
-    max_replicas = var.max_replicas
+    min_replicas                      = var.min_replicas
+    max_replicas                      = var.max_replicas
     scale_target_ref {
       kind = "Deployment"
       name = "${var.name}-deploy"
