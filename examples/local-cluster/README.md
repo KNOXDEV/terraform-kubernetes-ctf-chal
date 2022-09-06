@@ -17,7 +17,7 @@ terraform apply
 ```
 
 **With permission**, I've borrowed a challenge from
-[San Diego CTF 2022](https://github.com/acmucsd/sdctf-2022) and deployed it via
+[San Diego CTF 2021](https://github.com/acmucsd/sdctf-2021) and deployed it via
 the `forking` jail type. 
 
 Connect to the challenge after deploying with:

@@ -62,10 +62,10 @@ variable "target_utilization" {
   default = 60
 }
 
-variable "healthcheck_path" {
-  type = string
-  description = "path to healthcheck.py to use as a liveliness probe"
-  default = null
+variable "healthcheck" {
+  type = bool
+  description = "if true, will deploy a liveliness probe based on challenge_path/healthcheck.py"
+  default = false
 }
 
 variable "healthcheck_additional_requirements" {

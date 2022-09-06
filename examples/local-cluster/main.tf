@@ -8,9 +8,10 @@ provider "docker" {
   host = "tcp://localhost:2375"
 }
 
-module "ctf-chal-taap" {
+module "ctf-chal" {
   source = "../../"
   challenge_path = "./challenge"
-  name = "kleptomanic"
+  name = "unique-lasso"
+  healthcheck = true
   jail_type = "forking"
 }

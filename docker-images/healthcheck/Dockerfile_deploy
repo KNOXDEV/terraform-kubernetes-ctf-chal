@@ -1,0 +1,11 @@
+FROM healthcheck_base:latest
+ARG ADDITIONAL_REQUIREMENTS=""
+
+COPY healthcheck.py /home/user/healthcheck.py
+
+# install additional requirements
+RUN echo $ADDITIONAL_REQUIREMENTS >> /home/user/requirements.txt
+RUN python3 -m pip install -r /home/user/requirements.txt
+
+EXPOSE 21337
+ENTRYPOINT ["/home/user/entrypoint.sh"]

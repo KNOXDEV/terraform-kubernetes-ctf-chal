@@ -38,7 +38,6 @@ resource "kubernetes_deployment" "challenge_deployment" {
           port {
             container_port = 1337
           }
-          image_pull_policy = "Always"
           # this is the most restrictive context that still allows nsjail to run
           security_context {
             read_only_root_filesystem = true

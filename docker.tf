@@ -1,3 +1,13 @@
+
+# build the healthcheck base
+resource "docker_image" "healthcheck_base" {
+  name = "healthcheck-base-image"
+  build {
+    path      = local.healthcheck_image_path
+    tag = ["healthcheck_base:latest"]
+  }
+}
+
 # build the base challenge image
 resource "docker_image" "challenge_base" {
   name = "challenge-base-image"
@@ -37,15 +47,16 @@ resource "docker_image" "chal" {
 
 # generate the healthcheck, if provided
 resource "docker_image" "healthcheck" {
-  count = var.healthcheck_path != null ? 1 : 0
+  count = var.healthcheck ? 1 : 0
+  depends_on = [docker_image.healthcheck_base]
   name = "healthcheck-image"
   build {
-    path      = local.healthcheck_image_path
+    path      = var.challenge_path
+    dockerfile = "${local.healthcheck_image_path}/Dockerfile_deploy"
     build_arg = {
-      HEALTHCHECK_SCRIPT      = var.healthcheck_path
       ADDITIONAL_REQUIREMENTS = var.healthcheck_additional_requirements
     }
-    tag = ["${var.name}_healthcheck:latest", local.healthcheck_image_name]
+    tag = ["${var.name}_healthcheck:latest", local.published_healthcheck_image_name]
   }
 }
 
@@ -58,7 +69,7 @@ resource "docker_registry_image" "challenge_published" {
 
 # publish the docker image to the provided registry ONLY IF one was given
 resource "docker_registry_image" "healthcheck_published" {
-  count      = local.should_publish && var.healthcheck_path != null ? 1 : 0
+  count      = local.should_publish && var.healthcheck ? 1 : 0
   depends_on = [docker_image.healthcheck]
-  name       = local.published_image_name
+  name       = local.published_healthcheck_image_name
 }

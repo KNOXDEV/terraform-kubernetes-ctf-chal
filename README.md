@@ -126,8 +126,8 @@ in order to provide port forwarding.
 ### healthcheck assumptions
 
 In order to take advantage of the healthcheck functionalities,
-you need to feed the module a python script via the
-input variable `healthcheck_path`.
+your `challenge_path` needs to contain a `healthcheck.py` script
+and you need to set the input variable `healthcheck` to **true**.
 
 This script will be called every 30 seconds or so.
 If this script returns a non-zero exit code,
@@ -138,7 +138,7 @@ If at any point the challenge degrades and is no longer solvable,
 k8s will catch this and restart your container.
 
 Your healthcheck script can access the service on `localhost:1337`,
-and by default, you will have access to `pwntools`.
+and by default, you will have access to [pwntools](https://github.com/Gallopsled/pwntools).
 You can install any additional healthcheck dependencies with the
 `healthcheck_additional_requirements` input variable.
 
