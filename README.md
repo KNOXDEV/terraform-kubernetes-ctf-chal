@@ -13,7 +13,7 @@ to a Kubernetes cluster.
 ```terraform
 module "challenge" {
    source = "KNOXDEV/ctf-chal/kubernetes"
-   version = "1.2.0"
+   version = "1.3.0"
    name = "unique-challenge-name"
    challenge_path = "./path/to/challenge/source/code"
    jail_type = "forking"
@@ -78,6 +78,7 @@ This type is well suited to most challenges that requires state between connecti
 
 Use of the `tunnelling` jail type *is* subject to some
 [additional requirements](#challenge-image-assumptions) on the challenge image.
+Additionally, **healthchecks are currently not supported by this jail type**.
 
 
 ### provider dependencies

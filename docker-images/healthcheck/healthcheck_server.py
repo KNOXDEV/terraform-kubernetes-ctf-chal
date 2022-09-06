@@ -5,7 +5,7 @@ class HealthCheckRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         # run the healthcheck subprocess
         try:
-            process = subprocess.run(["python3", "/home/user/healthcheck.py"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=true, timeout=20)
+            process = subprocess.run(["python3", "/home/user/healthcheck.py"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=20)
             if process.returncode == 0:
                 self.send_response(200)
                 self.send_header("Content-length", 0)
@@ -25,5 +25,5 @@ class HealthCheckRequestHandler(http.server.BaseHTTPRequestHandler):
         self.send_header("Content-length", 0)
         self.end_headers()
 
-httpd = server_class(('', 21337), HealthCheckRequestHandler)
+httpd = http.server.HTTPServer(('', 21337), HealthCheckRequestHandler)
 httpd.serve_forever()

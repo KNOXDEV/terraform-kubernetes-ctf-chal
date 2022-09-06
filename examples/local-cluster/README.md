@@ -1,9 +1,11 @@
 
-# local cluster
+# local cluster with healthcheck
 
 This is an example of using `ctf-chal/kubernetes` in conjunction with the kubernetes cluster
 that ships with Docker Desktop. This is a good way to run challenges locally before deploying
 to a cloud provider.
+
+This also shows a working example of a healthcheck.
 
 ## usage
 

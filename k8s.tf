@@ -6,7 +6,9 @@ resource "kubernetes_namespace" "challenge_ns" {
 }
 
 resource "kubernetes_deployment" "challenge_deployment" {
-  depends_on = [docker_registry_image.challenge_published, docker_image.chal]
+  depends_on = [
+    docker_registry_image.challenge_published, docker_image.chal, docker_registry_image.healthcheck_published
+  ]
   metadata {
     name      = "${var.name}-deploy"
     namespace = kubernetes_namespace.challenge_ns.metadata[0].name
@@ -46,39 +48,51 @@ resource "kubernetes_deployment" "challenge_deployment" {
               add  = local.k8s_capabilities
             }
           }
-#          // both the liveness probe and the readiness probe are part of the healthcheck
-#          liveness_probe {
-#            http_get {
-#              path = "/"
-#              port = 21337
-#            }
-#            failure_threshold     = 2
-#            initial_delay_seconds = 45
-#            timeout_seconds       = 3
-#            period_seconds        = 30
-#          }
-#          readiness_probe {
-#            http_get {
-#              path = "/"
-#              port = 21337
-#            }
-#            initial_delay_seconds = 5
-#            timeout_seconds       = 3
-#            period_seconds        = 5
-#          }
+          // both the liveness probe and the readiness probe are part of the healthcheck
+          dynamic liveness_probe {
+            // we use dynamic to include the healthcheck conditionally
+            for_each = var.healthcheck ? [1] : []
+            content {
+              http_get {
+                path = "/"
+                port = 21337
+              }
+              failure_threshold     = 2
+              initial_delay_seconds = 45
+              timeout_seconds       = 3
+              period_seconds        = 30
+            }
+          }
+          dynamic readiness_probe {
+            // we use dynamic to include the healthcheck conditionally
+            for_each = var.healthcheck ? [1] : []
+            content {
+              http_get {
+                path = "/"
+                port = 21337
+              }
+              initial_delay_seconds = 5
+              timeout_seconds       = 3
+              period_seconds        = 5
+            }
+          }
         }
-#        container {
-#          name = "healthcheck"
-#          image = "healthcheck"
-#          resources {
-#            limits = {
-#              cpu = 1000
-#            }
-#            requests = {
-#              cpu = 50
-#            }
-#          }
-#        }
+        dynamic container {
+          // we use dynamic to include the healthcheck conditionally
+          for_each = var.healthcheck ? [1] : []
+          content {
+            name  = "healthcheck"
+            image = local.published_healthcheck_image_name
+            resources {
+              limits = {
+                cpu = "1000m"
+              }
+              requests = {
+                cpu = "50m"
+              }
+            }
+          }
+        }
       }
     }
   }
