@@ -39,9 +39,9 @@ module "challenge" {
   # this keeps us from deploying challenges before the GCP stuff is initialized
   depends_on = [data.google_container_cluster.default]
   source = "../../../"
-  challenge_path = "./chal-taap"
-  name = "taap"
-  jail_type = "tunnelling"
+  challenge_path = "./challenge"
+  name = "kleptomanic"
+  jail_type = "forking"
   docker_registry = "${var.region}-docker.pkg.dev/${var.project_id}/${var.artifact_repository_id}"
 }
 
